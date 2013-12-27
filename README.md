@@ -72,4 +72,5 @@ Thank you! And Enjoy!
 TODO
 ============
 * implement minor mode which will be activated in pop up buffer. The main purpose of this minor mode is to provide key bindings by means of which it will be possible to `goto` to the next/previous answers;
-* make it so that howdoi.el will be able to cleverly guess the major mode for a pop up buffer.
+* make it so that howdoi.el will be able to guess the major mode for a pop up buffer.
+* don't block Emacs when show the answer in pop up buffer.
