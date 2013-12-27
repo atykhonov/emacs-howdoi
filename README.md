@@ -1,7 +1,7 @@
 Emacs interface to the `howdoi` command line tool.
 ============
 
-howdoi - instant coding answers via the command line.
+howdoi - instant coding answers via the command line (https://github.com/gleitz/howdoi).
 
 emacs-howdoi.el - interface to this tool.
 
