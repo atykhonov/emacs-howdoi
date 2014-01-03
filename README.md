@@ -23,6 +23,7 @@ Usage
 ============
 
 The following two commands show an answer in a pop up buffer:
+
      M-x howdoi-query RET <your-query> RET ;; e.g.: M-x howdoi-query RET format date bash RET
      M-x howdoi-query-line-at-point ;; takes a query from a line at point and shows an answer in a pop up buffer.
 
