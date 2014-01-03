@@ -1,24 +1,19 @@
-Emacs interface to the `howdoi` command line tool.
+Howdoi.el -- instant coding answers via Emacs.
 ============
 
-howdoi - instant coding answers via the command line (https://github.com/gleitz/howdoi).
+Do you find yourself constantly Googling for how to do basic
+programing tasks? Suppose you want to know how to format a date in
+bash. Why open your browser and read through blogs when you can just
+M-x howdoi-query RET format date bash
 
-emacs-howdoi.el - interface to this tool.
-
-This package allows to use `howdoi` command line utility from
-whithin GNU Emacs. This utility needs to be installed and needs
-to be located somewhere in the PATH (so GNU Emacs will be able
-to find and use it).
+Howdoi.el is a way to query Stack Overflow directly from the Emacs and
+get back the most upvoted answer to the first question that comes up
+for that query.
 
 Installation
 ============
 
-First of all `howdoi` command line utility must be installed.
-
-The utility and more information about usage and installation
-you can find here: https://github.com/gleitz/howdoi
-
-Then copy howdoi.el file to the ~/.emacs.d/ folder and put the line
+Copy howdoi.el file to the ~/.emacs.d/ folder and put the line
 
     (load-file "~/.emacs.d/howdoi.el")
 
@@ -27,40 +22,73 @@ into the ~/.emacs configuration file.
 Usage
 ============
 
-This package provides several functions to deal with the utility:
+The following two commands show an answer in a pop up buffer:
+     M-x howdoi-query RET <your-query> RET ;; e.g.: M-x howdoi-query RET format date bash RET
+     M-x howdoi-query-line-at-point ;; takes a query from a line at point and shows an answer in a pop up buffer.
 
-    M-x howdoi-query-line-at-point
+To get an answer containing only code snippet you could use:
 
-Takes a line at the point and makes `howdoi` query. Pop ups a buffer displaying the answer.
+     M-x howdoi-query-line-at-point-replace-by-code-snippet
 
-    M-x howdoi-query-line-at-point-replace
+this command replaces current line with a code snippet parsed from an answer.
 
-Takes a line at the point, makes `howdoi` query and replaces the line by the answer.
+With that command you could get situation when it returns not good
+enough code snippet. Or may be after that command you would like to
+get more details which relates to the original query. Then you could
+use the following command:
 
-    M-x howdoi-query
+    M-x howdoi-show-current-question
 
-Asks to put a query in the minibuffer and makes `howdoi` query. Pop ups a buffer displaying the answer.
+This one will show (in a pop up buffer) full answer which contains
+recently inserted code snippet. This command may help sometimes to
+avoid additional googling when original query is a little bit
+ambiguous.
+
+In the mentioned pop up buffer you could use C-c C-n and C-c C-p
+key bindings to take a look at next and previous questions which
+are similar to yours original one.
+
+By default pop up buffer displays only answers. You could change
+`howdoi-display-question` custom variable to show also a question.
 
 Example
 ============
 
 For example there is the line in the *scratch* buffer:
 
-    python open file
+    python file exists
 
 point is located somewhere on this line.
 
-After `M-x howdoi-query-line-at-point-replace` this line will be replaced by something like the following:
+After `M-x howdoi-query-line-at-point-replace-by-code-snippet` this
+line will be replaced by something like the following:
 
-    fname = "C:\\Python32\\getty.txt"
-    infile = open(fname, 'r')
-    data = infile.read()
-    print(data)
+    try:
+       with open('filename'):
+           process()
+       except IOError:
+           print 'Oh dear.'
+
+Other example: there is the line in the *scratch* buffer:
+
+    elisp split string
+
+After `M-x howdoi-query-line-at-point-replace-by-code-snippet` this
+line will be replaced by:
+
+(split-string "1.2.3" "\\.")
+
+You may be wondered: why "." is escaped with two '\'? You could
+execute then `M-x howdoi-show-current-question` and the full answer
+will be shown so you'll be able to get an explanation.
+
+And last example: just execute `M-x howdoi-query RET howdoi RET` and
+it will return an answer in a pop up buffer.
 
 Author
 ============
 
-Andrey Tykhonov (@atykhonov)
+Andrey Tykhonov (atykhonov at gmail.com; @atykhonov)
 
 Notes
 ============
@@ -68,9 +96,3 @@ Notes
 Please contribute if you like too! :) Otherwise write down your suggestions, comments, feature requests etc etc etc.
 
 Thank you! And Enjoy!
-
-TODO
-============
-* implement minor mode which will be activated in pop up buffer. The main purpose of this minor mode is to provide key bindings by means of which it will be possible to `goto` to the next/previous answers;
-* make it so that howdoi.el will be able to guess the major mode for a pop up buffer.
-* don't block Emacs when show the answer in pop up buffer.
