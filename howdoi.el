@@ -10,14 +10,14 @@
 ;; This file is NOT part of GNU Emacs.
 
 ;; howdoi.el is free software: you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
+;; it under the terms of the GNU General Public License as published
+;; by the Free Software Foundation, either version 3 of the License,
+;; or (at your option) any later version.
 
-;; howdoi.el is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;; howdoi.el is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with request.el.
@@ -26,38 +26,45 @@
 ;;; Commentary:
 
 ;; Do you find yourself constantly Googling for how to do basic
-;; programing tasks? Suppose you want to know how to format a date
-;; in bash. Why open your browser and read through blogs when you
-;; can just M-x howdoi-query RET format date bash
+;; programing tasks? Suppose you want to know how to format a date in
+;; bash. Why open your browser and read through blogs when you can
+;; just M-x howdoi-query RET format date bash
 ;;
-;; This package was inspired by Tom (adatgyujto at gmail.com).
-;; It was his idea to make a port of command line tool such as
-;; python howdoi: https://github.com/gleitz/howdoi
+;; This package was inspired by Tom (adatgyujto at gmail.com). It was
+;; his idea to make a port of command line tool such as python's
+;; `howdoi`: https://github.com/gleitz/howdoi
 ;;
 ;; Thank you, Tom!
 ;;
-;; There are several commands to get an answer.
+;; Commands:
 ;;
-;; To get an answer in a pop up buffer you could use:
+;; The following two commands show an answer in a pop up buffer:
 ;; M-x howdoi-query RET <your-query>
-;; M-x howdoi-query-line-at-point
+;; M-x howdoi-query-line-at-point ;; takes a query from a line at point
 ;;
 ;; To get an answer containing only code snippet you could use:
 ;; M-x howdoi-query-line-at-point-replace-by-code-snippet
 ;;     this command replaces current line with a code snippet
 ;;     parsed from an answer.
 ;;
-;; When one of these commands executes howdoi.el will try to find
-;; similar questions on the stackoverflow.com and return you an answer.
+;; In case of last command you could get situation when it returns not
+;; good enough code snippet. Or may be after that command you would
+;; like to get more details which relates to the original query. Then
+;; you could use the following command:
 ;;
-;; By default pop up buffer displays only answer and only one answer. You
-;; could change `howdoi-display-question` custom variable to show also
-;; a question. Also you could change `howdoi-number-of-answers` to show
-;; more than one answer (per question).
+;; M-x howdoi-show-current-question
 ;;
-;; In the mentioned pop up buffer you could use C-c C-n and C-c C-p key
-;; bindings to find for you next and previous questions which are similar to
-;; yours original question.
+;; This one will show (in a pop up buffer) full answer which contains
+;; recently inserted code snippet. This command may help sometimes to
+;; avoid additional googling when original query is a little bit
+;; ambiguous.
+;;
+;; In the mentioned pop up buffer you could use C-c C-n and C-c C-p
+;; key bindings to take a look at next and previous questions which
+;; are similar to yours original one.
+;;
+;; By default pop up buffer displays only answers. You could change
+;; `howdoi-display-question` custom variable to show also a question.
 
 ;;; Code:
 
@@ -72,15 +79,19 @@ When non-nil, question is printed."
   :type 'integer
   :group 'howdoi)
 
-(defvar howdoi-question-urls '())
+(defvar howdoi-question-urls '()
+  "Contains urls parsed from google.")
 
-(defvar howdoi-current-question-num 0)
+(defvar howdoi-current-question-num 0
+  "Current question number.")
 
-(defvar howdoi-display-callback nil)
+(defvar howdoi-display-callback nil
+  "Display callback which uses to display questions and answers.")
+
+(defvar howdoi-requests-cache (make-hash-table :test 'equal)
+  "Keeps cached answers to avoid surplus http queries.")
 
 (defvar howdoi-original-buffer nil)
-
-(defvar howdoi-requests-cache (make-hash-table :test 'equal))
 
 
 (defun trim-string (string)
@@ -90,7 +101,7 @@ When non-nil, question is printed."
                             (replace-regexp-in-string "[ \t\n\r]*\\'" "" string)))
 
 (defun howdoi-query-line-at-point ()
-  "Take line at point and make howdoi query.
+  "Take a line at point and make request.
 Pop up a buffer displaying the answer."
   (interactive)
   (let ((query (buffer-substring-no-properties
@@ -99,8 +110,8 @@ Pop up a buffer displaying the answer."
     (howdoi-request query 'howdoi-pop-answer-to-buffer-callback)))
 
 (defun howdoi-query-line-at-point-replace-by-code-snippet ()
-  "Take the line at the point, make howdoi query
-and replace the line by the code snippet."
+  "Take a line at the point, make request
+and replace the line by a code snippet."
   (interactive)
   (let* ((query (buffer-substring-no-properties
                 (line-beginning-position)
@@ -110,12 +121,15 @@ and replace the line by the code snippet."
                         'howdoi-replace-line-at-point-callback)))
 
 (defun howdoi-replace-line-at-point-callback (question answers snippets)
+  "Callback which calls immediately after http request. It
+replaces a line at point by code snippet."
   (with-current-buffer howdoi-original-buffer
     (move-beginning-of-line nil)
     (kill-line nil)
     (insert (nth 0 snippets))))
 
 (defun howdoi-format-question-and-answers (question answers)
+  "Format output of question and answers."
   (setq result (mapconcat (function (lambda (x)
                                       (trim-string x)))
                           answers "\n\n-------\n\n"))
@@ -124,7 +138,8 @@ and replace the line by the code snippet."
   result)
 
 (defun howdoi-pop-answer-to-buffer-callback (question answers snippets)
-  "Pop up a buffer named *How do I* displaying the answer."
+  "Callback which calls immediately after http request. Pop up a
+buffer named *How do I* displaying the answer."
   (let ((howdoi-buffer (get-buffer-create "*How do I*")))
     (save-selected-window
       (with-current-buffer howdoi-buffer
@@ -141,6 +156,9 @@ Pop up a buffer displaying the answer."
   (howdoi-request query 'howdoi-pop-answer-to-buffer-callback))
 
 (defun howdoi-request (query callback &optional &key full-answer &key question)
+  "Make http request to the Google. Use `query` as search
+string. `Callback` calls after http request to display the
+results."
   (setq howdoi-display-callback callback)
   (setq howdoi-current-question-num 0)
   (setq howdoi-requests-cache (make-hash-table :test 'equal))
@@ -157,6 +175,7 @@ Pop up a buffer displaying the answer."
                                                        howdoi-question-urls))))))
 
 (defun howdoi-retrive-links-from-google (buffer)
+  "Retrieves links from a google search result page."
   (let ((result '()))
     (with-current-buffer buffer
       (goto-char (point-min))
@@ -169,6 +188,7 @@ Pop up a buffer displaying the answer."
     result))
 
 (defun howdoi-stackoverflow-request (url)
+  "Make http request to the stackoverflow."
   (let ((url-request-method "GET")
         (cache (gethash url howdoi-requests-cache)))
     (if cache
@@ -191,6 +211,7 @@ Pop up a buffer displaying the answer."
                       nil t)))))
 
 (defun howdoi-stackoverflow-retrieve-question ()
+  "Retrieve a question from the stackoverflow."
   (goto-char (point-min))
   (let ((result ""))
     (when (search-forward-regexp "<div[^>]*?class=\"question" nil t)
@@ -208,6 +229,7 @@ Pop up a buffer displaying the answer."
     result))
 
 (defun howdoi-stackoverflow-retrieve-answer ()
+  "Retrieve an answer from the stackoverflow."
   (goto-char (point-min))
   (let ((result '()))
     (while (search-forward-regexp "<div[^>]*?class=\"answer" nil t)
@@ -230,6 +252,7 @@ Pop up a buffer displaying the answer."
         (replace-match "" nil t)))))
 
 (defun howdoi-stackoverflow-retrieve-code-snippets ()
+  "Retrieve code snippets from the stackoverflow."
   (goto-char (point-min))
   (let ((result '()))
     (while (search-forward-regexp "<div[^>]*?class=\"answer" nil t)
@@ -244,6 +267,8 @@ Pop up a buffer displaying the answer."
     result))
 
 (defun howdoi-show-next-question ()
+  "Show next question. The purpose of this function to use it in
+the *How do I* pop up buffer to view next question."
   (interactive)
   (setq howdoi-display-callback 'howdoi-pop-answer-to-buffer-callback)
   (setq howdoi-current-question-num (+ howdoi-current-question-num 1))
@@ -253,7 +278,10 @@ Pop up a buffer displaying the answer."
                                      howdoi-question-urls)))
 
 (defun howdoi-show-current-question ()
-  "Pop up a buffer named *How do I* displaying the answer."
+  "Pop up a buffer named *How do I* displaying the current found
+question. It may be helpful to use after such command as
+howdoi-query-line-at-point-replace-by-code-snippet to view more
+details or to find more preferable code snippet."
   (interactive)
   (let* ((howdoi-buffer (get-buffer-create "*How do I*"))
          (url (nth howdoi-current-question-num howdoi-question-urls))
@@ -269,6 +297,8 @@ Pop up a buffer displaying the answer."
       (message "Current question not found"))))
 
 (defun howdoi-show-previous-question ()
+  "Show previous question. The purpose of this function to use it in
+the *How do I* pop up buffer to view previous question."
   (interactive)
   (setq howdoi-display-callback 'howdoi-pop-answer-to-buffer-callback)
   (setq howdoi-current-question-num (- howdoi-current-question-num 1))
