@@ -172,7 +172,8 @@ results."
                     (setq howdoi-question-urls (howdoi-retrive-links-from-google
                                                 (current-buffer)))
                     (howdoi-stackoverflow-request (nth howdoi-current-question-num
-                                                       howdoi-question-urls))))))
+                                                       howdoi-question-urls)))
+                  nil t)))
 
 (defun howdoi-retrive-links-from-google (buffer)
   "Retrieves links from a google search result page."
