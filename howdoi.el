@@ -308,12 +308,19 @@ the *How do I* pop up buffer to view previous question."
   (howdoi-stackoverflow-request (nth howdoi-current-question-num
                                      howdoi-question-urls)))
 
+(defun howdoi-browse-current-question ()
+  "Ask a WWW browser to load current question."
+  (interactive)
+  (let ((url (nth howdoi-current-question-num howdoi-question-urls)))
+    (browse-url url)))
+
 (define-minor-mode howdoi-minor-mode
   "Toggle howdoi minor mode."
   :lighter " HowDoI"
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd "C-c C-n") 'howdoi-show-next-question)
             (define-key map (kbd "C-c C-p") 'howdoi-show-previous-question)
+            (define-key map (kbd "C-c C-o") 'howdoi-browse-current-question)
             map)
   :group 'howdoi)
 
