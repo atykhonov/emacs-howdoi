@@ -61,7 +61,8 @@
 ;;
 ;; In the mentioned pop up buffer you could use C-c C-n and C-c C-p
 ;; key bindings to take a look at next and previous questions which
-;; are similar to yours original one.
+;; are similar to yours original one. Also, you could open current
+;; question in a browser by means of C-c C-o key binding.
 ;;
 ;; By default pop up buffer displays only answers. You could change
 ;; `howdoi-display-question` custom variable to show also a question.
