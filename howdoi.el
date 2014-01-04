@@ -209,6 +209,7 @@ results."
                             (setq question (howdoi-stackoverflow-retrieve-question)))
                           (puthash howdoi-current-stackoverflow-url
                                    `(,question ,answers ,snippets) howdoi-requests-cache)
+                          (message "Answer retrieved!")
                           (funcall howdoi-display-callback question answers snippets)))
                       nil t)))))
 
