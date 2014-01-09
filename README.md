@@ -98,3 +98,7 @@ Notes
 Please contribute if you like too! :) Otherwise write down your suggestions, comments, feature requests etc etc etc.
 
 Thank you! And Enjoy!
+
+Contributors
+============
+Graydon Hoare
