@@ -213,6 +213,31 @@ results."
                           (funcall howdoi-display-callback question answers snippets)))
                       nil t)))))
 
+(defun howdoi-browse-url (button)
+  "Retrieve URL from a `button`'s property and browse it."
+  (interactive)
+  (let ((url (button-get button 'url)))
+    (browse-url url)))
+
+(defun howdoi-replace-html-ahref-tags ()
+  "Replace a-href tags by text buttons."
+  (interactive)
+  (let ((p1) (p2) (p3) (p4) (p5) (p6) (ahref-tag "") (href "") (link-text "")))
+  (while (search-forward-regexp "<a[^>]*href=\"[^\"]*?\"[^>]*?>" nil t)
+    (setq p5 (point))
+    (search-backward "<a" (point-min) t)
+    (setq p1 (point))
+    (search-forward "href=\"" nil t)
+    (setq p2 (point))
+    (search-forward "\"" nil t)
+    (setq p3 (- (point) 1))
+    (setq href (buffer-substring-no-properties p2 p3))
+    (search-forward "</a>" nil t)
+    (setq p6 (point))
+    (setq link-text (buffer-substring-no-properties p5 (- p6 4)))
+    (delete-region p1 p6)
+    (insert-text-button link-text 'action 'howdoi-browse-url 'url href)))
+
 (defun howdoi-stackoverflow-retrieve-question ()
   "Retrieve a question from the stackoverflow."
   (goto-char (point-min))
@@ -225,8 +250,10 @@ results."
               (erase-buffer)
               (insert str)
               (goto-char (point-min))
-              (howdoi-strip-html-tags '("p" "pre" "code" "hr"))
-              (setq result (buffer-substring-no-properties
+              (howdoi-replace-html-ahref-tags)
+              (html2text)
+              (howdoi-strip-html-tags '("code"))
+              (setq result (buffer-substring
                             (point-min)
                             (point-max))))))))
     result))
@@ -243,11 +270,14 @@ results."
               (erase-buffer)
               (insert str)
               (goto-char (point-min))
-              (howdoi-strip-html-tags '("p" "pre" "code" "hr"))
-              (setq result (append result `(,(buffer-substring-no-properties (point-min) (point-max))))))))))
+              (howdoi-replace-html-ahref-tags)
+              (html2text)
+              (howdoi-strip-html-tags '("code"))
+              (setq result (append result `(,(buffer-substring (point-min) (point-max))))))))))
     result))
 
 (defun howdoi-strip-html-tags (tags)
+  "Strip given html `tags`."
   (dolist (tagn tags)
     (dolist (tag `(,(format "<%s>" tagn) ,(format "</%s>" tagn)))
       (goto-char (point-min))
