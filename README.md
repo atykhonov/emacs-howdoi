@@ -101,4 +101,4 @@ Thank you! And Enjoy!
 
 Contributors
 ============
-Graydon Hoare
+[Graydon Hoare](https://github.com/graydon)
