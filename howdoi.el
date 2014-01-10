@@ -173,6 +173,7 @@ results."
         (args (concat "?q="
                       (url-hexify-string "site:stackoverflow.com ")
                       (url-hexify-string query))))
+    (message "Retrieving answer...")
     (url-retrieve (concat url args)
                   (lambda (status)
                     (setq howdoi-question-urls (howdoi-retrive-links-from-google
@@ -205,6 +206,7 @@ results."
                  (nth 2 cache))
       (progn
         (setq howdoi-current-stackoverflow-url url)
+        (message "Retrieving answer...")
         (url-retrieve url
                       (lambda (status)
                         (let ((answers '()) (snippets '()) (question ""))
