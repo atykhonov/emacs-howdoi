@@ -51,22 +51,22 @@ By default pop up buffer displays only answers. You could change
 In the mentioned pop up buffer enables HowDoI major-mode. There are
 such key bindings are available:
 
-n - `howdoi-show-next-question`
-p - `howdoi-show-previous-question`
-b - `howdoi-browse-current-question`
-< - `beginning-of-buffer`
-> - `end-of-buffer`
-q - `quit window`
+* n - `howdoi-show-next-question`
+* p - `howdoi-show-previous-question`
+* b - `howdoi-browse-current-question`
+* &lt; - `beginning-of-buffer`
+* &gt; - `end-of-buffer`
+* q - `quit window`
 
 There is also howdoi-minor-mode available with a list of key bindings:
 
-C-c o n - `howdoi-show-next-question`
-C-c o p - `howdoi-show-previous-question`
-C-c o c - `howdoi-show-current-question`
-C-c o b - `howdoi-browse-current-question`
-C-c o q - `howdoi-query`
-C-c o l - `howdoi-query-line-at-point`
-C-c o r - `howdoi-query-line-at-point-replace-by-code-snippet`
+* C-c o n - `howdoi-show-next-question`
+* C-c o p - `howdoi-show-previous-question`
+* C-c o c - `howdoi-show-current-question`
+* C-c o b - `howdoi-browse-current-question`
+* C-c o q - `howdoi-query`
+* C-c o l - `howdoi-query-line-at-point`
+* C-c o r - `howdoi-query-line-at-point-replace-by-code-snippet`
 
 
 Example
