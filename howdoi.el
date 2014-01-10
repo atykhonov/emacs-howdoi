@@ -4,7 +4,7 @@
 ;; Free Software Foundation, Inc.
 
 ;; Author: Andrey Tykhonov <atykhonov at gmail.com>
-;; Version: 0.4.0
+;; Version: 0.4.1
 ;; Keywords: howdoi
 
 ;; This file is NOT part of GNU Emacs.
@@ -68,6 +68,7 @@
 ;; n - howdoi-show-next-question
 ;; p - howdoi-show-previous-question
 ;; b - howdoi-browse-current-question
+;; u - howdoi-query
 ;; < - beginning-of-buffer
 ;; > - end-of-buffer
 ;; q - quit window
@@ -75,13 +76,13 @@
 ;; There is also howdoi-minor-mode available with a list of key
 ;; bindings:
 ;;
-;; C-c o n - howdoi-show-next-question
-;; C-c o p - howdoi-show-previous-question
-;; C-c o c - howdoi-show-current-question
-;; C-c o b - howdoi-browse-current-question
-;; C-c o q - howdoi-query
-;; C-c o l - howdoi-query-line-at-point
-;; C-c o r - howdoi-query-line-at-point-replace-by-code-snippet
+;; C-c C-o n - howdoi-show-next-question
+;; C-c C-o p - howdoi-show-previous-question
+;; C-c C-o c - howdoi-show-current-question
+;; C-c C-o b - howdoi-browse-current-question
+;; C-c C-o u - howdoi-query
+;; C-c C-o l - howdoi-query-line-at-point
+;; C-c C-o r - howdoi-query-line-at-point-replace-by-code-snippet
 ;;
 ;; Contributors:
 ;; Graydon Hoare (https://github.com/graydon)
@@ -370,13 +371,13 @@ the *How do I* pop up buffer to view previous question."
   "Toggle howdoi minor mode."
   :lighter " HowDoI"
   :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "C-c o n") 'howdoi-show-next-question)
-            (define-key map (kbd "C-c o p") 'howdoi-show-previous-question)
-            (define-key map (kbd "C-c o c") 'howdoi-show-current-question)
-            (define-key map (kbd "C-c o b") 'howdoi-browse-current-question)
-            (define-key map (kbd "C-c o q") 'howdoi-query)
-            (define-key map (kbd "C-c o l") 'howdoi-query-line-at-point)
-            (define-key map (kbd "C-c o r") 'howdoi-query-line-at-point-replace-by-code-snippet)
+            (define-key map (kbd "C-c C-o n") 'howdoi-show-next-question)
+            (define-key map (kbd "C-c C-o p") 'howdoi-show-previous-question)
+            (define-key map (kbd "C-c C-o c") 'howdoi-show-current-question)
+            (define-key map (kbd "C-c C-o b") 'howdoi-browse-current-question)
+            (define-key map (kbd "C-c C-o u") 'howdoi-query)
+            (define-key map (kbd "C-c C-o l") 'howdoi-query-line-at-point)
+            (define-key map (kbd "C-c C-o r") 'howdoi-query-line-at-point-replace-by-code-snippet)
             map)
   :group 'howdoi)
 
@@ -387,6 +388,7 @@ the *How do I* pop up buffer to view previous question."
 (define-key howdoi-mode-map (kbd "n") 'howdoi-show-next-question)
 (define-key howdoi-mode-map (kbd "p") 'howdoi-show-previous-question)
 (define-key howdoi-mode-map (kbd "b") 'howdoi-browse-current-question)
+(define-key howdoi-mode-map (kbd "u") 'howdoi-query)
 
 
 (provide 'howdoi)
