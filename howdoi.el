@@ -141,12 +141,17 @@ replaces a line at point by code snippet."
 (defun howdoi-pop-answer-to-buffer-callback (question answers snippets)
   "Callback which calls immediately after http request. Pop up a
 buffer named *How do I* displaying the answer."
+  (howdoi-pop-answer-to-buffer question answers))
+
+(defun howdoi-pop-answer-to-buffer (question answers)
+  "Pop up a buffer with the answer."
   (let ((howdoi-buffer (get-buffer-create "*How do I*")))
     (save-selected-window
       (with-current-buffer howdoi-buffer
-        (howdoi-minor-mode)
+        (read-only-mode -1)
         (erase-buffer)
         (insert (howdoi-format-question-and-answers question answers))
+        (howdoi-mode)
         (goto-char (point-min)))
       (pop-to-buffer howdoi-buffer))))
 
@@ -316,17 +321,10 @@ question. It may be helpful to use after such command as
 howdoi-query-line-at-point-replace-by-code-snippet to view more
 details or to find more preferable code snippet."
   (interactive)
-  (let* ((howdoi-buffer (get-buffer-create "*How do I*"))
-         (url (nth howdoi-current-question-num howdoi-question-urls))
+  (let* ((url (nth howdoi-current-question-num howdoi-question-urls))
          (cache (gethash url howdoi-requests-cache)))
     (if cache
-        (save-selected-window
-          (with-current-buffer howdoi-buffer
-            (howdoi-minor-mode)
-            (erase-buffer)
-            (insert (howdoi-format-question-and-answers (nth 0 cache) (nth 1 cache)))
-            (goto-char (point-min)))
-          (pop-to-buffer howdoi-buffer))
+        (howdoi-pop-answer-to-buffer (nth 0 cache) (nth 1 cache))
       (message "Current question not found"))))
 
 (defun howdoi-show-previous-question ()
@@ -350,11 +348,24 @@ the *How do I* pop up buffer to view previous question."
   "Toggle howdoi minor mode."
   :lighter " HowDoI"
   :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "C-c C-n") 'howdoi-show-next-question)
-            (define-key map (kbd "C-c C-p") 'howdoi-show-previous-question)
-            (define-key map (kbd "C-c C-o") 'howdoi-browse-current-question)
+            (define-key map (kbd "C-c o n") 'howdoi-show-next-question)
+            (define-key map (kbd "C-c o p") 'howdoi-show-previous-question)
+            (define-key map (kbd "C-c o c") 'howdoi-show-current-question)
+            (define-key map (kbd "C-c o b") 'howdoi-browse-current-question)
+            (define-key map (kbd "C-c o q") 'howdoi-query)
+            (define-key map (kbd "C-c o l") 'howdoi-query-line-at-point)
+            (define-key map (kbd "C-c o r") 'howdoi-query-line-at-point-replace-by-code-snippet)
             map)
   :group 'howdoi)
+
+(define-derived-mode howdoi-mode special-mode "HowDoI"
+  "Howdoi major mode."
+  :group 'howdoi)
+
+(define-key howdoi-mode-map (kbd "n") 'howdoi-show-next-question)
+(define-key howdoi-mode-map (kbd "p") 'howdoi-show-previous-question)
+(define-key howdoi-mode-map (kbd "b") 'howdoi-browse-current-question)
+
 
 (provide 'howdoi)
 
