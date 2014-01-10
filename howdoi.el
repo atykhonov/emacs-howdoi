@@ -65,12 +65,12 @@
 ;; In the mentioned pop up buffer enables HowDoI major-mode. There are
 ;; such key bindings are available:
 ;;
-;; n -- howdoi-show-next-question
-;; p -- howdoi-show-previous-question
-;; b -- howdoi-browse-current-question
-;; < -- beginning-of-buffer
-;; > -- end-of-buffer
-;; q -- quit window
+;; n - howdoi-show-next-question
+;; p - howdoi-show-previous-question
+;; b - howdoi-browse-current-question
+;; < - beginning-of-buffer
+;; > - end-of-buffer
+;; q - quit window
 ;;
 ;; There is also howdoi-minor-mode available with a list of key
 ;; bindings:
