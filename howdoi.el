@@ -4,7 +4,7 @@
 ;; Free Software Foundation, Inc.
 
 ;; Author: Andrey Tykhonov <atykhonov at gmail.com>
-;; Version: 0.2.0
+;; Version: 0.4.0
 ;; Keywords: howdoi
 
 ;; This file is NOT part of GNU Emacs.
@@ -59,13 +59,33 @@
 ;; avoid additional googling when original query is a little bit
 ;; ambiguous.
 ;;
-;; In the mentioned pop up buffer you could use C-c C-n and C-c C-p
-;; key bindings to take a look at next and previous questions which
-;; are similar to yours original one. Also, you could open current
-;; question in a browser by means of C-c C-o key binding.
-;;
 ;; By default pop up buffer displays only answers. You could change
 ;; `howdoi-display-question` custom variable to show also a question.
+;;
+;; In the mentioned pop up buffer enables HowDoI major-mode. There are
+;; such key bindings are available:
+;;
+;; n -- howdoi-show-next-question
+;; p -- howdoi-show-previous-question
+;; b -- howdoi-browse-current-question
+;; < -- beginning-of-buffer
+;; > -- end-of-buffer
+;; q -- quit window
+;;
+;; There is also howdoi-minor-mode available with a list of key
+;; bindings:
+;;
+;; C-c o n - howdoi-show-next-question
+;; C-c o p - howdoi-show-previous-question
+;; C-c o c - howdoi-show-current-question
+;; C-c o b - howdoi-browse-current-question
+;; C-c o q - howdoi-query
+;; C-c o l - howdoi-query-line-at-point
+;; C-c o r - howdoi-query-line-at-point-replace-by-code-snippet
+;;
+;; Contributors:
+;; Graydon Hoare (https://github.com/graydon)
+;;
 
 ;;; Code:
 
