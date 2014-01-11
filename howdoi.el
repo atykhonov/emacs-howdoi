@@ -103,11 +103,6 @@ When non-nil, question is printed."
   :type 'boolean
   :group 'howdoi)
 
-(defcustom howdoi-number-of-answers 1
-  "Controls how many answers to return."
-  :type 'integer
-  :group 'howdoi)
-
 (defvar howdoi-question-urls '()
   "Contains urls parsed from google.")
 
