@@ -90,6 +90,13 @@
 
 ;;; Code:
 
+(defgroup howdoi nil
+  "Instant coding answers via Emacs."
+  :group 'extensions
+  :group 'convenience
+  :version "24.3"
+  :link '(emacs-commentary-link "howdoi.el"))
+
 (defcustom howdoi-display-question nil
   "Whether to display the question.
 When non-nil, question is printed."
