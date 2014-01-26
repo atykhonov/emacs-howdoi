@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Emacs-howdoi by atykhonov</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Emacs-howdoi</h1>
+        <p>Emacs interface to the `howdoi` command line tool (https://github.com/gleitz/howdoi)</p>
+
+        <p class="view"><a href="https://github.com/atykhonov/emacs-howdoi">View the Project on GitHub <small>atykhonov/emacs-howdoi</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/atykhonov/emacs-howdoi/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/atykhonov/emacs-howdoi/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/atykhonov/emacs-howdoi">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="howdoiel----instant-coding-answers-via-emacs" class="anchor" href="#howdoiel----instant-coding-answers-via-emacs"><span class="octicon octicon-link"></span></a>Howdoi.el -- instant coding answers via Emacs.</h1>
+
+<p>Do you find yourself constantly Googling for how to do basic
+programing tasks? Suppose you want to know how to format a date in
+bash. Why open your browser and read through blogs when you can just
+M-x howdoi-query RET format date bash RET</p>
+
+<p>Howdoi.el is a way to query Stack Overflow directly from the Emacs and
+get back the most upvoted answer to the first question that comes up
+for that query.</p>
+
+<h1>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<p>Copy howdoi.el file to the ~/.emacs.d/ folder and put the line</p>
+
+<pre><code>(load-file "~/.emacs.d/howdoi.el")
+</code></pre>
+
+<p>into the ~/.emacs configuration file.</p>
+
+<h1>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<p>The following two commands show an answer in a pop up buffer:</p>
+
+<pre><code> M-x howdoi-query RET &lt;your-query&gt; RET ;; e.g.: M-x howdoi-query RET format date bash RET
+ M-x howdoi-query-line-at-point ;; takes a query from a line at point and shows an answer in a pop up buffer.
+</code></pre>
+
+<p>To get an answer containing only code snippet you could use:</p>
+
+<pre><code> M-x howdoi-query-line-at-point-replace-by-code-snippet
+</code></pre>
+
+<p>this command replaces current line with a code snippet parsed from an answer.</p>
+
+<p>With that command you could get situation when it returns not good
+enough code snippet. Or may be after that command you would like to
+get more details which relates to the original query. Then you could
+use the following command:</p>
+
+<pre><code>M-x howdoi-show-current-question
+</code></pre>
+
+<p>This one will show (in a pop up buffer) full answer which contains
+recently inserted code snippet. This command may help sometimes to
+avoid additional googling when original query is a little bit
+ambiguous.</p>
+
+<p>By default pop up buffer displays only answers. You could change
+<code>howdoi-display-question</code> custom variable to show also a question.</p>
+
+<p>In the mentioned pop up buffer enables HowDoI major-mode. There are
+such key bindings are available:</p>
+
+<ul>
+<li>n - <code>howdoi-show-next-question</code>
+</li>
+<li>p - <code>howdoi-show-previous-question</code>
+</li>
+<li>b - <code>howdoi-browse-current-question</code>
+</li>
+<li>u - <code>howdoi-query</code>
+</li>
+<li>&lt; - <code>beginning-of-buffer</code>
+</li>
+<li>&gt; - <code>end-of-buffer</code>
+</li>
+<li>q - <code>quit window</code>
+</li>
+</ul><p>There is also howdoi-minor-mode available with a list of key bindings:</p>
+
+<ul>
+<li>C-c C-o n - <code>howdoi-show-next-question</code>
+</li>
+<li>C-c C-o p - <code>howdoi-show-previous-question</code>
+</li>
+<li>C-c C-o c - <code>howdoi-show-current-question</code>
+</li>
+<li>C-c C-o b - <code>howdoi-browse-current-question</code>
+</li>
+<li>C-c C-o u - <code>howdoi-query</code>
+</li>
+<li>C-c C-o l - <code>howdoi-query-line-at-point</code>
+</li>
+<li>C-c C-o r - <code>howdoi-query-line-at-point-replace-by-code-snippet</code>
+</li>
+</ul><h1>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h1>
+
+<p>For example there is the line in the <em>scratch</em> buffer:</p>
+
+<pre><code>python file exists
+</code></pre>
+
+<p>point is located somewhere on this line.</p>
+
+<p>After <code>M-x howdoi-query-line-at-point-replace-by-code-snippet</code> this
+line will be replaced by something like the following:</p>
+
+<pre><code>try:
+   with open('filename'):
+       process()
+   except IOError:
+       print 'Oh dear.'
+</code></pre>
+
+<p>Other example: there is the line in the <em>scratch</em> buffer:</p>
+
+<pre><code>elisp split string
+</code></pre>
+
+<p>After <code>M-x howdoi-query-line-at-point-replace-by-code-snippet</code> this
+line will be replaced by:</p>
+
+<p>(split-string "1.2.3" "\.")</p>
+
+<p>You may be wondered: why "." is escaped with two '\'? You could
+execute then <code>M-x howdoi-show-current-question</code> and the full answer
+will be shown so you'll be able to get an explanation.</p>
+
+<p>And last example: just execute <code>M-x howdoi-query RET howdoi RET</code> and
+it will return an answer in a pop up buffer.</p>
+
+<p>In a pop up buffer you could press "n" to view next question, "p" to
+view previous question and "b" to browse question in a www browser.</p>
+
+<h1>
+<a name="author" class="anchor" href="#author"><span class="octicon octicon-link"></span></a>Author</h1>
+
+<p>Andrey Tykhonov (atykhonov at gmail.com; <a href="https://github.com/atykhonov" class="user-mention">@atykhonov</a>)</p>
+
+<h1>
+<a name="notes" class="anchor" href="#notes"><span class="octicon octicon-link"></span></a>Notes</h1>
+
+<p>Please contribute if you like too! :) Otherwise write down your suggestions, comments, feature requests etc etc etc.</p>
+
+<p>Thank you! And Enjoy!</p>
+
+<h1>
+<a name="contributors" class="anchor" href="#contributors"><span class="octicon octicon-link"></span></a>Contributors</h1>
+
+<p><a href="https://github.com/graydon">Graydon Hoare</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/atykhonov">atykhonov</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
