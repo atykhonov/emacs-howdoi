@@ -4,7 +4,7 @@
 ;; Free Software Foundation, Inc.
 
 ;; Author: Andrey Tykhonov <atykhonov at gmail.com>
-;; Version: 0.4.1
+;; Version: 0.4.2
 ;; Keywords: howdoi
 
 ;; This file is NOT part of GNU Emacs.
@@ -98,24 +98,27 @@
   :link '(emacs-commentary-link "howdoi.el"))
 
 (defcustom howdoi-display-question nil
-  "Whether to display the question.
+  "Whether to display the question in a pop up buffer.
 When non-nil, question is printed."
   :type 'boolean
   :group 'howdoi)
 
 (defvar howdoi-question-urls '()
-  "Contains urls parsed from google.")
+  "Temporal variable which holds urls parsed from Google.")
 
 (defvar howdoi-current-question-num 0
-  "Current question number.")
+  "Current number of the question which is currently displayed
+in a pop up buffer.")
 
 (defvar howdoi-display-callback nil
-  "Display callback which uses to display questions and answers.")
+  "Temporal variable which is used to keep display callback
+amongst functions.")
 
 (defvar howdoi-requests-cache (make-hash-table :test 'equal)
-  "Keeps cached answers to avoid surplus http queries.")
+  "Keeps cached answers to avoid surplus http requests.")
 
-(defvar howdoi-original-buffer nil)
+(defvar howdoi-original-buffer nil "Keeps a reference to the
+original buffer in which user might performs howdoi query")
 
 
 (defun trim-string (string)
@@ -125,8 +128,8 @@ When non-nil, question is printed."
                             (replace-regexp-in-string "[ \t\n\r]*\\'" "" string)))
 
 (defun howdoi-query-line-at-point ()
-  "Take a line at point and make request.
-Pop up a buffer displaying the answer."
+  "Take a line at point, make the search using that line as a
+query and pop up a buffer displaying the answer."
   (interactive)
   (let ((query (buffer-substring-no-properties
                 (line-beginning-position)
@@ -134,8 +137,8 @@ Pop up a buffer displaying the answer."
     (howdoi-request query 'howdoi-pop-answer-to-buffer-callback)))
 
 (defun howdoi-query-line-at-point-replace-by-code-snippet ()
-  "Take a line at the point, make request
-and replace the line by a code snippet."
+  "Take a line at the point, make the search using that line as a
+query and replace the line by a found code snippet."
   (interactive)
   (let* ((query (buffer-substring-no-properties
                 (line-beginning-position)
@@ -153,7 +156,7 @@ replaces a line at point by code snippet."
     (insert (nth 0 snippets))))
 
 (defun howdoi-format-question-and-answers (question answers)
-  "Format output of question and answers."
+  "Format output of QUESTION and ANSWERS."
   (setq result (mapconcat (function (lambda (x)
                                       (trim-string x)))
                           answers "\n\n-------\n\n"))
@@ -163,11 +166,11 @@ replaces a line at point by code snippet."
 
 (defun howdoi-pop-answer-to-buffer-callback (question answers snippets)
   "Callback which calls immediately after http request. Pop up a
-buffer named *How do I* displaying the answer."
+buffer named *How do I* displaying the QUESTION, ANSWERS and SNIPPETS."
   (howdoi-pop-answer-to-buffer question answers))
 
 (defun howdoi-pop-answer-to-buffer (question answers)
-  "Pop up a buffer with the answer."
+  "Pop up a buffer with an answer."
   (let ((howdoi-buffer (get-buffer-create "*How do I*")))
     (save-selected-window
       (with-current-buffer howdoi-buffer
@@ -179,14 +182,14 @@ buffer named *How do I* displaying the answer."
       (pop-to-buffer howdoi-buffer))))
 
 (defun howdoi-query (query)
-  "Prompts for the query and makes howdoi query.
-Pop up a buffer displaying the answer."
+  "Prompts for the QUERY and performs the search for an answer.
+Pop up a buffer displaying an answer."
   (interactive "sQuery: ")
   (howdoi-request query 'howdoi-pop-answer-to-buffer-callback))
 
 (defun howdoi-request (query callback &optional &key full-answer &key question)
-  "Make http request to the Google. Use `query` as search
-string. `Callback` calls after http request to display the
+  "Make http request to the Google. Use QUERY as search
+string. CALLBACK calls after http request to display the
 results."
   (setq howdoi-display-callback callback)
   (setq howdoi-current-question-num 0)
@@ -244,7 +247,7 @@ results."
                       nil t)))))
 
 (defun howdoi-browse-url (button)
-  "Retrieve URL from a `button`'s property and browse it."
+  "Retrieve URL from a BUTTON's property and browse it."
   (interactive)
   (let ((url (button-get button 'url)))
     (browse-url url)))
@@ -307,7 +310,7 @@ results."
     result))
 
 (defun howdoi-strip-html-tags (tags)
-  "Strip given html `tags`."
+  "Strip given html TAGS."
   (dolist (tagn tags)
     (dolist (tag `(,(format "<%s>" tagn) ,(format "</%s>" tagn)))
       (goto-char (point-min))
@@ -343,8 +346,9 @@ the *How do I* pop up buffer to view next question."
 (defun howdoi-show-current-question ()
   "Pop up a buffer named *How do I* displaying the current found
 question. It may be helpful to use after such command as
-howdoi-query-line-at-point-replace-by-code-snippet to view more
-details or to find more preferable code snippet."
+`howdoi-query-line-at-point-replace-by-code-snippet' to view more
+details in a pop up buffer or to find more preferable code
+snippet."
   (interactive)
   (let* ((url (nth howdoi-current-question-num howdoi-question-urls))
          (cache (gethash url howdoi-requests-cache)))
@@ -364,13 +368,33 @@ the *How do I* pop up buffer to view previous question."
                                      howdoi-question-urls)))
 
 (defun howdoi-browse-current-question ()
-  "Ask a WWW browser to load current question."
+  "Ask a WWW browser to open current question."
   (interactive)
   (let ((url (nth howdoi-current-question-num howdoi-question-urls)))
     (browse-url url)))
 
 (define-minor-mode howdoi-minor-mode
-  "Toggle howdoi minor mode."
+  "Toggle howdoi minor mode. 
+
+With a prefix argument ARG, enable Line Number mode if ARG is
+positive, and disable it otherwise.  If called from Lisp, enable
+the mode if ARG is omitted or nil.
+
+This minor mode provides a set of key bindings for easy access to
+the howdoi.
+
+The following keys are available in `howdoi-minor-mode':
+
+  key             binding
+-------         -----------
+
+C-c C-o n       howdoi-show-next-question
+C-c C-o p       howdoi-show-previous-question
+C-c C-o c       howdoi-show-current-question
+C-c C-o b       howdoi-browse-current-question
+C-c C-o u       howdoi-query
+C-c C-o l       howdoi-query-line-at-point
+C-c C-o r       howdoi-query-line-at-point-replace-by-code-snippet"
   :lighter " HowDoI"
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd "C-c C-o n") 'howdoi-show-next-question)
@@ -384,7 +408,8 @@ the *How do I* pop up buffer to view previous question."
   :group 'howdoi)
 
 (define-derived-mode howdoi-mode special-mode "HowDoI"
-  "Howdoi major mode."
+  "Howdoi major mode. This major mode is mainly intended to
+provide key bindings for easy navigation within a pop up buffer."
   :group 'howdoi)
 
 (define-key howdoi-mode-map (kbd "n") 'howdoi-show-next-question)
