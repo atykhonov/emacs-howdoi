@@ -130,6 +130,7 @@ original buffer in which user might performs howdoi query")
   (replace-regexp-in-string "\\`[ \t\n\r]*" ""
                             (replace-regexp-in-string "[ \t\n\r]*\\'" "" string)))
 
+;;;###autoload
 (defun howdoi-query-line-at-point ()
   "Take a line at point, make the search using that line as a
 query and pop up a buffer displaying the answer."
@@ -139,6 +140,7 @@ query and pop up a buffer displaying the answer."
                 (line-end-position))))
     (howdoi-request query 'howdoi-pop-answer-to-buffer-callback)))
 
+;;;###autoload
 (defun howdoi-query-line-at-point-replace-by-code-snippet ()
   "Take a line at the point, make the search using that line as a
 query and replace the line by a found code snippet."
@@ -185,6 +187,7 @@ buffer named *How do I* displaying the QUESTION, ANSWERS and SNIPPETS."
         (goto-char (point-min)))
       (pop-to-buffer howdoi-buffer))))
 
+;;;###autoload
 (defun howdoi-query (query)
   "Prompts for the QUERY and performs the search for an answer.
 Pop up a buffer displaying an answer."
@@ -390,6 +393,7 @@ the *How do I* pop up buffer to view previous question."
   (let ((url (nth howdoi-current-question-num howdoi-question-urls)))
     (browse-url url)))
 
+;;;###autoload
 (define-minor-mode howdoi-minor-mode
   "Toggle howdoi minor mode. 
 
