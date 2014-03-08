@@ -191,6 +191,20 @@ Pop up a buffer displaying an answer."
   (interactive "sQuery: ")
   (howdoi-request query 'howdoi-pop-answer-to-buffer-callback))
 
+(defun howdoi-insert-code-snippet-at-point-callback (question answers snippets)
+  "Callback which calls immediately after http request. Insert the first
+snippet from SNIPPETS at point."
+  (with-current-buffer howdoi-original-buffer
+    (insert (car snippets))))
+
+;;;###autoload
+(defun howdoi-query-insert-code-snippet-at-point (query)
+  "Prompt for the QUERY and perform the search for an answer.
+Insert a found code snippet at point."
+  (interactive "sQuery: ")
+  (setq howdoi-original-buffer (current-buffer))
+  (howdoi-request query 'howdoi-insert-code-snippet-at-point-callback))
+
 (defun howdoi-request (query callback &optional &key full-answer question)
   "Make http request to the Google. Use QUERY as search
 string. CALLBACK calls after http request to display the
