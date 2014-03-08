@@ -103,6 +103,9 @@ When non-nil, question is printed."
   :type 'boolean
   :group 'howdoi)
 
+(defvar howdoi-current-stackoverflow-url nil
+  "Temporal variable which holds stackoverflow url for current query.")
+
 (defvar howdoi-question-urls '()
   "Temporal variable which holds urls parsed from Google.")
 
@@ -157,12 +160,13 @@ replaces a line at point by code snippet."
 
 (defun howdoi-format-question-and-answers (question answers)
   "Format output of QUESTION and ANSWERS."
-  (setq result (mapconcat (function (lambda (x)
-                                      (trim-string x)))
-                          answers "\n\n-------\n\n"))
-  (when (and question howdoi-display-question)
-    (setq result (format "%s\n\n=======\n\n%s" (trim-string question) result)))
-  result)
+  (let ((result (mapconcat (function (lambda (x)
+                                       (trim-string x)))
+                           answers "\n\n-------\n\n")))
+    (when (and question howdoi-display-question)
+      (setq result
+            (format "%s\n\n=======\n\n%s" (trim-string question) result)))
+    result))
 
 (defun howdoi-pop-answer-to-buffer-callback (question answers snippets)
   "Callback which calls immediately after http request. Pop up a
@@ -187,7 +191,7 @@ Pop up a buffer displaying an answer."
   (interactive "sQuery: ")
   (howdoi-request query 'howdoi-pop-answer-to-buffer-callback))
 
-(defun howdoi-request (query callback &optional &key full-answer &key question)
+(defun howdoi-request (query callback &optional &key full-answer question)
   "Make http request to the Google. Use QUERY as search
 string. CALLBACK calls after http request to display the
 results."
@@ -255,21 +259,21 @@ results."
 (defun howdoi-replace-html-ahref-tags ()
   "Replace a-href tags by text buttons."
   (interactive)
-  (let ((p1) (p2) (p3) (p4) (p5) (p6) (ahref-tag "") (href "") (link-text "")))
-  (while (search-forward-regexp "<a[^>]*href=\"[^\"]*?\"[^>]*?>" nil t)
-    (setq p5 (point))
-    (search-backward "<a" (point-min) t)
-    (setq p1 (point))
-    (search-forward "href=\"" nil t)
-    (setq p2 (point))
-    (search-forward "\"" nil t)
-    (setq p3 (- (point) 1))
-    (setq href (buffer-substring-no-properties p2 p3))
-    (search-forward "</a>" nil t)
-    (setq p6 (point))
-    (setq link-text (buffer-substring-no-properties p5 (- p6 4)))
-    (delete-region p1 p6)
-    (insert-text-button link-text 'action 'howdoi-browse-url 'url href)))
+  (let (p1 p2 p3 p4 p5 p6 (ahref-tag "") (href "") (link-text ""))
+    (while (search-forward-regexp "<a[^>]*href=\"[^\"]*?\"[^>]*?>" nil t)
+      (setq p5 (point))
+      (search-backward "<a" (point-min) t)
+      (setq p1 (point))
+      (search-forward "href=\"" nil t)
+      (setq p2 (point))
+      (search-forward "\"" nil t)
+      (setq p3 (- (point) 1))
+      (setq href (buffer-substring-no-properties p2 p3))
+      (search-forward "</a>" nil t)
+      (setq p6 (point))
+      (setq link-text (buffer-substring-no-properties p5 (- p6 4)))
+      (delete-region p1 p6)
+      (insert-text-button link-text 'action 'howdoi-browse-url 'url href))))
 
 (defun howdoi-stackoverflow-retrieve-question ()
   "Retrieve a question from the stackoverflow."
@@ -325,8 +329,7 @@ results."
       (if (search-forward-regexp "<pre[^>]*>" nil t)
           (when (search-forward-regexp "<code>\\([^<]*?\\)</code>" nil t)
             (let ((str (match-string 1)))
-              (setq result (append result `(,str)))
-              (setq not-found nil)))
+              (setq result (append result `(,str)))))
         (when (search-forward-regexp "<code>\\(.*?\\)</code>" nil t)
           (let ((str (match-string 1)))
             (setq result (append result `(,str)))))))
