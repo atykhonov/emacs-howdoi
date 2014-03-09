@@ -7,7 +7,7 @@
 ;; Maintainer: Andrey Tykhonov <atykhonov@gmail.com>
 ;; URL: https://github.com/atykhonov/emacs-howdoi/
 ;; Version: 0.4.3
-;; Keywords: howdoi
+;; Keywords: howdoi, convenience
 
 ;; Contributors:
 ;;   Graydon Hoare (https://github.com/graydon)
