@@ -89,6 +89,7 @@
 ;; C-c C-o u - howdoi-query
 ;; C-c C-o l - howdoi-query-line-at-point
 ;; C-c C-o r - howdoi-query-line-at-point-replace-by-code-snippet
+;; C-c C-o i - howdoi-query-insert-code-snippet-at-point
 ;;
 ;;
 
@@ -419,7 +420,8 @@ C-c C-o c       howdoi-show-current-question
 C-c C-o b       howdoi-browse-current-question
 C-c C-o u       howdoi-query
 C-c C-o l       howdoi-query-line-at-point
-C-c C-o r       howdoi-query-line-at-point-replace-by-code-snippet"
+C-c C-o r       howdoi-query-line-at-point-replace-by-code-snippet
+C-c C-o i       howdoi-query-insert-code-snippet-at-point"
   :lighter " HowDoI"
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd "C-c C-o n") 'howdoi-show-next-question)
@@ -429,6 +431,7 @@ C-c C-o r       howdoi-query-line-at-point-replace-by-code-snippet"
             (define-key map (kbd "C-c C-o u") 'howdoi-query)
             (define-key map (kbd "C-c C-o l") 'howdoi-query-line-at-point)
             (define-key map (kbd "C-c C-o r") 'howdoi-query-line-at-point-replace-by-code-snippet)
+            (define-key map (kbd "C-c C-o i") 'howdoi-query-insert-code-snippet-at-point)
             map)
   :group 'howdoi)
 
