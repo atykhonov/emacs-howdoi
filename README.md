@@ -31,7 +31,13 @@ To get an answer containing only code snippet you could use:
 
      M-x howdoi-query-line-at-point-replace-by-code-snippet
 
-this command replaces current line with a code snippet parsed from an answer.
+this command replaces current line with a code snippet parsed from an
+answer or do
+
+     M-x howdoi-query-insert-code-snippet-at-point
+
+to get a code snippet for given query. The code snippet is inserted at
+point.
 
 With that command you could get situation when it returns not good
 enough code snippet. Or may be after that command you would like to
