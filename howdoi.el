@@ -1,6 +1,6 @@
 ;;; howdoi.el --- instant coding answers via Emacs.
 
-;; Copyright (C) 2013 Andrey Tykhonov
+;; Copyright (C) 2014 Andrey Tykhonov
 ;; Free Software Foundation, Inc.
 
 ;; Author: Andrey Tykhonov <atykhonov at gmail.com>
