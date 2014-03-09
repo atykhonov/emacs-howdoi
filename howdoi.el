@@ -5,6 +5,7 @@
 
 ;; Author: Andrey Tykhonov <atykhonov at gmail.com>
 ;; Maintainer: Andrey Tykhonov <atykhonov@gmail.com>
+;; URL: https://github.com/atykhonov/emacs-howdoi/
 ;; Version: 0.4.2
 ;; Keywords: howdoi
 
