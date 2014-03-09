@@ -7,6 +7,10 @@
 ;; Version: 0.4.2
 ;; Keywords: howdoi
 
+;; Contributors:
+;;   Graydon Hoare (https://github.com/graydon)
+;;   Łukasz Jędrzejewski (https://github.com/jedrz)
+
 ;; This file is NOT part of GNU Emacs.
 
 ;; howdoi.el is free software: you can redistribute it and/or modify
