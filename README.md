@@ -127,5 +127,5 @@ Thank you! And Enjoy!
 
 Contributors
 ============
-[Graydon Hoare](https://github.com/graydon)
-[Łukasz Jędrzejewski](https://github.com/jedrz)
+- [Graydon Hoare](https://github.com/graydon)
+- [Łukasz Jędrzejewski](https://github.com/jedrz)
