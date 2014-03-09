@@ -90,8 +90,6 @@
 ;; C-c C-o l - howdoi-query-line-at-point
 ;; C-c C-o r - howdoi-query-line-at-point-replace-by-code-snippet
 ;;
-;; Contributors:
-;; Graydon Hoare (https://github.com/graydon)
 ;;
 
 ;;; Code:
