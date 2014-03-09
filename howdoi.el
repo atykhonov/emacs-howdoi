@@ -4,6 +4,7 @@
 ;; Free Software Foundation, Inc.
 
 ;; Author: Andrey Tykhonov <atykhonov at gmail.com>
+;; Maintainer: Andrey Tykhonov <atykhonov@gmail.com>
 ;; Version: 0.4.2
 ;; Keywords: howdoi
 
