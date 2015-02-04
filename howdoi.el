@@ -323,7 +323,7 @@ results."
   (let ((result '()))
     (while (search-forward-regexp "<div[^>]*?class=\"answer" nil t)
       (when (search-forward-regexp "<td class=\"answercell\">" nil t)
-        (when (search-forward-regexp "<div class=\"post-text\">\\(\\(.*?\n?\\)*\\)</div>" nil t)
+        (when (search-forward-regexp "<div class=\"post-text\".*?>\\(\\(.*?\n?\\)*\\)</div>" nil t)
           (let ((str (match-string 1)))
             (with-temp-buffer
               (erase-buffer)
